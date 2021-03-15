@@ -52,7 +52,17 @@
 
 CameraInterfaceSeagull::CameraInterfaceSeagull()
 {
-	get_pins();
+	//get_pins();
+
+	// NORA hacks
+	// Set all pins as invalid
+	for (unsigned i = 0; i < arraySize(_pins); i++) {
+		_pins[i] = -1;
+	}
+
+	_pins[0] = 14 - 1;
+	_pins[1] = 13 - 1;
+
 	setup();
 }
 
