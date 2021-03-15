@@ -89,32 +89,32 @@ struct timer_callback_data_s {
 	volatile bool watchdog_triggered = false;
 };
 
-/* This is used to schedule work for the logger (periodic scan for updated topics) */
-static void timer_callback(void *arg)
-{
-	/* Note: we are in IRQ context here (on NuttX) */
+// /* This is used to schedule work for the logger (periodic scan for updated topics) */
+// static void timer_callback(void *arg)
+// {
+// 	/* Note: we are in IRQ context here (on NuttX) */
 
-	timer_callback_data_s *data = (timer_callback_data_s *)arg;
+// 	timer_callback_data_s *data = (timer_callback_data_s *)arg;
 
-	if (watchdog_update(data->watchdog_data)) {
-		data->watchdog_triggered = true;
-	}
+// 	if (watchdog_update(data->watchdog_data)) {
+// 		data->watchdog_triggered = true;
+// 	}
 
-	/* check the value of the semaphore: if the logger cannot keep up with running it's main loop as fast
-	 * as the timer_callback here increases the semaphore count, the counter would increase unbounded,
-	 * leading to an overflow at some point. This case we want to avoid here, so we check the current
-	 * value against a (somewhat arbitrary) threshold, and avoid calling sem_post() if it's exceeded.
-	 * (it's not a problem if the threshold is a bit too large, it just means the logger will do
-	 * multiple iterations at once, the next time it's scheduled). */
-	int semaphore_value;
+// 	/* check the value of the semaphore: if the logger cannot keep up with running it's main loop as fast
+// 	 * as the timer_callback here increases the semaphore count, the counter would increase unbounded,
+// 	 * leading to an overflow at some point. This case we want to avoid here, so we check the current
+// 	 * value against a (somewhat arbitrary) threshold, and avoid calling sem_post() if it's exceeded.
+// 	 * (it's not a problem if the threshold is a bit too large, it just means the logger will do
+// 	 * multiple iterations at once, the next time it's scheduled). */
+// 	int semaphore_value;
 
-	if (px4_sem_getvalue(&data->semaphore, &semaphore_value) == 0 && semaphore_value > 1) {
-		return;
-	}
+// 	if (px4_sem_getvalue(&data->semaphore, &semaphore_value) == 0 && semaphore_value > 1) {
+// 		return;
+// 	}
 
-	px4_sem_post(&data->semaphore);
+// 	px4_sem_post(&data->semaphore);
 
-}
+// }
 
 
 int logger_main(int argc, char *argv[])
@@ -640,15 +640,15 @@ void Logger::run()
 
 		if (_writer.backend() & LogWriter::BackendFile) {
 
-			const pid_t pid_self = getpid();
-			const pthread_t writer_thread = _writer.thread_id_file();
+			//const pid_t pid_self = getpid();
+			//const pthread_t writer_thread = _writer.thread_id_file();
 
 			// sched_note_start is already called from pthread_create and task_create,
 			// which means we can expect to find the tasks in system_load.tasks, as required in watchdog_initialize
-			watchdog_initialize(pid_self, writer_thread, timer_callback_data.watchdog_data);
+			//watchdog_initialize(pid_self, writer_thread, timer_callback_data.watchdog_data);
 		}
 
-		hrt_call_every(&timer_call, _log_interval, _log_interval, timer_callback, &timer_callback_data);
+		//hrt_call_every(&timer_call, _log_interval, _log_interval, timer_callback, &timer_callback_data);
 	}
 
 	// check for new subscription data
