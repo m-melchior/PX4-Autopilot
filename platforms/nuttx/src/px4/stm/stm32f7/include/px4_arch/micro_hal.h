@@ -46,7 +46,9 @@ __BEGIN_DECLS
 #define PX4_BBSRAM_GETDESC_IOCTL STM32F7_BBSRAM_GETDESC_IOCTL
 #define PX4_FLASH_BASE  0x08000000
 #define PX4_NUMBER_I2C_BUSES STM32F7_NI2C
-#define PX4_ARCH_DCACHE_LINESIZE ARMV7M_DCACHE_LINESIZE
+#define PX4_ARCH_DCACHE_ALIGNMENT ARMV7M_DCACHE_LINESIZE
+#define px4_cache_aligned_data() aligned_data(ARMV7M_DCACHE_LINESIZE)
+#define px4_cache_aligned_alloc(s) memalign(ARMV7M_DCACHE_LINESIZE,(s))
 
 int stm32_flash_lock(void);
 int stm32_flash_unlock(void);
