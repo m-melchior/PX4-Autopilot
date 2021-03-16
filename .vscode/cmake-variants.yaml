@@ -146,3 +146,8 @@ CONFIG:
       buildType: MinSizeRel
       settings:
         CONFIG: nxp_fmuk66-v3_default
+    simtoo_moment_default:
+      short: simtoo_moment
+      buildType: MinSizeRel
+      settings:
+        CONFIG: simtoo_moment_default

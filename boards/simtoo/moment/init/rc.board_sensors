@@ -1,0 +1,14 @@
+#!/bin/sh
+#
+# boar specific sensors init
+#------------------------------------------------------------------------------
+
+# todo: check applicable for simtoo moment
+#board_adc start
+
+# IMU
+mpu6500 -s -R 0 start
+# Compass
+hmc5883 -T -I -R 0 start
+# Baro not known, yet
+#bmp280 -s start

@@ -1,0 +1,13 @@
+#!/bin/sh
+#
+# board specific MAVLink startup script.
+#------------------------------------------------------------------------------
+
+# Start MAVLink on the USB port
+mavlink start -d /dev/ttyACM0
+
+#mavlink start -d /dev/ttyS1 -b 115200 -m osd
+#mavlink start -d /dev/ttyS1 -b 115200
+#mavlink stream -d /dev/ttyS1 -s HIGHRES_IMU -r 50
+#mavlink stream -d /dev/ttyS1 -s LOCAL_POSITION_NED -r 10
+##mavlink stream -d /dev/ttyS1 -s CAMERA_TRIGGER -r 100

@@ -1,0 +1,13 @@
+{
+    "board_id": 100,
+    "magic": "Moment007",
+    "description": "Firmware for the SimToo Moment 007",
+    "image": "",
+    "build_time": 0,
+    "summary": "SimToo Moment 007",
+    "version": "0.1",
+    "image_size": 0,
+    "image_maxsize": 1032192,
+    "git_identity": "",
+    "board_revision": 0
+}

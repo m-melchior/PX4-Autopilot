@@ -1,0 +1,6 @@
+#!/bin/sh
+#
+# board specific defaults
+#------------------------------------------------------------------------------
+
+param set-default SYS_AUTOSTART 4902

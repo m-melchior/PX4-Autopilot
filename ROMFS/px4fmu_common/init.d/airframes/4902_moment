@@ -1,0 +1,97 @@
+#!/bin/sh
+#
+# @name Simtoo Move 007
+#
+# @type Quadrotor x
+# @class Copter
+#
+# @output MAIN1 motor 1
+# @output MAIN2 motor 2
+# @output MAIN3 motor 3
+# @output MAIN4 motor 4
+#
+#
+# @maintainer Michael Melchior <michael@aviate-it.com>
+#
+
+. ${R}etc/init.d/rc.mc_defaults
+
+set MIXER quad_x
+
+set PWM_OUT 1234
+
+#param set-default BAT_CAPACITY 2900
+#param set-default BAT_N_CELLS 1
+# todo: check messages from batter i2c
+##param set-default BAT_SOURCE 1
+
+# circuit breakers
+#param set-default CBRK_SUPPLY_CHK 894281
+#param set-default CBRK_USB_CHK 197848
+
+#param set-default COM_RC_IN_MODE 1
+
+# todo: check values
+##param set-default EKF2_ABL_LIM 2
+##param set-default EKF2_AID_MASK 3
+##param set-default EKF2_HGT_MODE 2
+##param set-default EKF2_MAG_TYPE 1
+##param set-default EKF2_OF_DELAY 10
+## applicable for MPU600 only
+##param set-default IMU_ACCEL_CUTOFF 30
+##param set-default IMU_GYRO_CUTOFF 100
+
+# todo: enable for when tuning is done
+#param set-default MC_AIRMODE 0
+
+# todo: tune values
+#param set-default MC_PITCH_P 6.5
+#param set-default MC_PITCHRATE_D 2
+#param set-default MC_PITCHRATE_I 0.2
+#param set-default MC_PITCHRATE_P 0.07
+
+#param set-default MC_ROLL_P 6.5
+#param set-default MC_ROLLRATE_D 2
+#param set-default MC_ROLLRATE_I 0.2
+#param set-default MC_ROLLRATE_P 0.07
+
+#param set-default MC_YAW_P 3
+
+#param set-default MPC_HOLD_MAX_XY 0.1
+#param set-default MPC_MAX_FLOW_HGT 3
+#param set-default MPC_THR_HOVER 0.7
+#param set-default MPC_THR_MAX 1
+
+#param set-default MPC_Z_P 1.5
+#param set-default MPC_Z_VEL_I_ACC 6
+#param set-default MPC_Z_VEL_P_ACC 8
+
+# RC los failsafe mode after COM_RC_LOSS_T seconds
+# 0: Disabled
+# 1: Hold mode
+# 2: Return mode
+# 3: Land mode
+# 4: RC Auto Recovery (CASA Outback Challenge rules)
+# 5: Terminate
+# 6: Lockdown
+#param set-default COM_RC_LOSS_T 3
+#param set-default NAV_RCL_ACT 1
+
+#param set-default PWM_DISARMED 0
+#param set-default PWM_MAIN_MIN1 255
+#param set-default PWM_MAIN_MIN2 255
+#param set-default PWM_MAIN_MIN3 255
+#param set-default PWM_MAIN_MIN4 255
+#param set-default PWM_MAIN_MIN5 255
+#param set-default PWM_MAIN_MIN6 255
+#param set-default PWM_MAIN_MAX1 255
+#param set-default PWM_MAIN_MAX2 255
+#param set-default PWM_MAIN_MAX3 255
+#param set-default PWM_MAIN_MAX4 255
+#param set-default PWM_MAIN_MAX5 255
+#param set-default PWM_MAIN_MAX6 255
+
+#param set-default PWM_RATE 400
+
+#mavlink start -d /dev/ttyACM0
+

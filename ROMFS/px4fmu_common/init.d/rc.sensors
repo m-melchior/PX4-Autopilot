@@ -7,6 +7,7 @@
 
 if ! ver hwcmp OMNIBUS_F4SD
 then
+// todo: check relevance for simtoo moment
 	if ! ver hwcmp BITCRAZE_CRAZYFLIE
 	then
 		# Configure all I2C buses to 100 KHz as they
