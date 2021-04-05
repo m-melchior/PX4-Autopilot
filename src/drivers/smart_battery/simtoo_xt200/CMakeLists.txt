@@ -30,20 +30,13 @@
 # POSSIBILITY OF SUCH DAMAGE.
 #
 ############################################################################
+px4_add_module(
+	MODULE drivers__simtoo_xt200
+	MAIN simtoo_xt200
+	COMPILE_FLAGS
+	SRCS
+		SimToo_XT200.cpp
+	DEPENDS
+#		px4_work_queue
+	)
 
-add_library(drivers_board
-	board_init.c
-	board_i2c.cpp
-	board_mtd.cpp
-	board_spi.cpp
-	board_tim.cpp
-	board_usb.c
-)
-
-target_link_libraries(drivers_board
-	PRIVATE
-		arch_spi
-		#nuttx_arch
-		#nuttx_drivers
-		px4_layer
-)

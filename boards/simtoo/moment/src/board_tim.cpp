@@ -1,6 +1,6 @@
 /****************************************************************************
  *
- *   Copyright (c) 2012-2016 PX4 Development Team. All rights reserved.
+ *   Copyright (C) 2016 PX4 Development Team. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions
@@ -31,106 +31,26 @@
  *
  ****************************************************************************/
 
-/**
- * @file board_config.h
- *
- * Board internal definitions
- */
-
-#pragma once
-
-/****************************************************************************************************
- * Included Files
- ****************************************************************************************************/
-
-#include <px4_platform_common/px4_config.h>
-#include <nuttx/compiler.h>
-#include <stdint.h>
-
-//#include "board_i2c.h"
-//#include "board_spi.h"
-
-#define DIRECT_PWM_OUTPUT_CHANNELS	6
-
-#define GPIO_MINE			(GPIO_OUTPUT|GPIO_PUSHPULL|GPIO_SPEED_2MHz|GPIO_OUTPUT_CLEAR|GPIO_PORTA|GPIO_PIN8)
-#define GPIO_OTGFS_VBUS		(GPIO_INPUT|GPIO_FLOAT|GPIO_SPEED_100MHz|GPIO_OPENDRAIN|GPIO_PORTA|GPIO_PIN9)
-
-
-/* High-resolution timer */
-#define HRT_TIMER			8	/* use timer8 for the HRT */
-#define HRT_TIMER_CHANNEL	1	/* use capture/compare channel */
-
-
-#define PX4_I2C_BUS_MTD	1
-
-//#define BOARD_ENABLE_CONSOLE_BUFFER
-//#define BOARD_CONSOLE_BUFFER_SIZE (1024*3)
-
-#define BOARD_HAS_PWM	DIRECT_PWM_OUTPUT_CHANNELS
-
-/* This board provides a DMA pool and APIs */
-#define BOARD_DMA_ALLOC_POOL_SIZE 5120
-
-// todo: check DShot for motors
-//#define BOARD_DSHOT_MOTOR_ASSIGNMENT {3, 2, 1, 0, 4, 5};
-
-__BEGIN_DECLS
-
-#ifndef __ASSEMBLY__
-
-#define board_peripheral_reset(ms)
-
-extern void board_spi_init_hardware(void);
-extern int board_spi_init_interface(void);
-
-extern void stm32_spiinitialize(void);
-
-extern void stm32_usbinitialize(void);
-
-#include <px4_platform_common/board_common.h>
-
-#endif /* __ASSEMBLY__ */
-
-__END_DECLS
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+#include <px4_arch/io_timer_hw_description.h>
+constexpr io_timers_t io_timers[MAX_IO_TIMERS] = {
+	initIOTimer(Timer::Timer1, DMA{DMA::Index2, DMA::Stream5, DMA::Channel6}),
+	// DMAMAP_TIM4_CH3 conflicting with DMAMAP_UART5_TX
+	initIOTimer(Timer::Timer4, DMA{DMA::Index1, DMA::Stream6, DMA::Channel2}),
+
+//	initIOTimer(Timer::Timer1),
+//	initIOTimer(Timer::Timer4),
+};
+
+
+constexpr timer_io_channels_t timer_io_channels[MAX_TIMER_IO_CHANNELS] = {
+	initIOTimerChannelOutputClear(io_timers, {Timer::Timer4, Timer::Channel3}, {GPIO::PortB, GPIO::Pin8}),	// J5P1
+	initIOTimerChannelOutputClear(io_timers, {Timer::Timer4, Timer::Channel4}, {GPIO::PortB, GPIO::Pin9}),	// J1P1
+	initIOTimerChannelOutputClear(io_timers, {Timer::Timer4, Timer::Channel1}, {GPIO::PortB, GPIO::Pin6}),	// J1P2
+	initIOTimerChannelOutputClear(io_timers, {Timer::Timer4, Timer::Channel2}, {GPIO::PortB, GPIO::Pin7}),	// J5P2
+	initIOTimerChannelOutputClear(io_timers, {Timer::Timer1, Timer::Channel3}, {GPIO::PortB, GPIO::Pin1}),	// J4P3, Pitch Servo Camera
+	initIOTimerChannelOutputClear(io_timers, {Timer::Timer1, Timer::Channel1}, {GPIO::PortA, GPIO::Pin8}),	// J6P3, not connected
+};
+
+
+constexpr io_timers_channel_mapping_t io_timers_channel_mapping =
+	initIOTimerChannelMapping(io_timers, timer_io_channels);

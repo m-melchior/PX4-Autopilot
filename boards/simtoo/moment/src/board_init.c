@@ -56,7 +56,7 @@
 
 #include <nuttx/board.h>
 #include <nuttx/spi/spi.h>
-//#include <nuttx/i2c/i2c_master.h>
+#include <nuttx/i2c/i2c_master.h>
 
 #include <stm32.h>
 #include "board_config.h"
@@ -88,30 +88,32 @@ __BEGIN_DECLS
 
 __END_DECLS
 
-__EXPORT void board_on_reset(int status)
-{
-	/* configure the GPIO pins to outputs and keep them low */
-//	for (int i = 0; i < DIRECT_PWM_OUTPUT_CHANNELS; ++i) {
-//		px4_arch_configgpio(io_timer_channel_get_gpio_output(i));
+//__EXPORT void board_on_reset(int status)
+//{
+//	/* configure the GPIO pins to outputs and keep them low */
+////	for (int i = 0; i < DIRECT_PWM_OUTPUT_CHANNELS; ++i) {
+////		px4_arch_configgpio(io_timer_channel_get_gpio_output(i));
+////	}
+//
+//	/**
+//	 * On resets invoked from system (not boot) insure we establish a low
+//	 * output state (discharge the pins) on PWM pins before they become inputs.
+//	 */
+//
+//	if (status >= 0) {
+//		up_mdelay(400);
 //	}
-
-	/**
-	 * On resets invoked from system (not boot) insure we establish a low
-	 * output state (discharge the pins) on PWM pins before they become inputs.
-	 */
-
-	if (status >= 0) {
-		up_mdelay(400);
-	}
-}
-
+//}
 
 
 __EXPORT void stm32_boardinitialize(void)
 {
-	board_on_reset(-1);
+//	board_on_reset(-1);
+
+	stm32_configgpio(GPIO_MINE);
 
 	board_spi_init_hardware();
+
 
 // Remark: Doesn't seem to be necessary
 //	stm32_configgpio(GPIO_I2C2_SCL);

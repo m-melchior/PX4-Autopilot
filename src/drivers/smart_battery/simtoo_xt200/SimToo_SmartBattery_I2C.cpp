@@ -1,6 +1,6 @@
 /****************************************************************************
  *
- *   Copyright (c) 2012-2016 PX4 Development Team. All rights reserved.
+ *   Copyright (c) 2021 PX4 Development Team. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions
@@ -32,67 +32,57 @@
  ****************************************************************************/
 
 /**
- * @file board_config.h
+ * @file SimToo_SmartBattery_I2C
  *
- * Board internal definitions
+ * I2C interface for SimToo SmartBattery
  */
 
-#pragma once
-
-/****************************************************************************************************
- * Included Files
- ****************************************************************************************************/
-
 #include <px4_platform_common/px4_config.h>
-#include <nuttx/compiler.h>
-#include <stdint.h>
+#include <drivers/device/i2c.h>
 
-//#include "board_i2c.h"
-//#include "board_spi.h"
+#include "simtoo_xt200.h"
 
-#define DIRECT_PWM_OUTPUT_CHANNELS	6
+class SimToo_SmartBattery_I2C : public device::I2C
+{
+public:
+	SimToo_SmartBattery_I2C(int bus, int bus_frequency);
+	virtual ~SimToo_SmartBattery_I2C() = default;
 
-#define GPIO_MINE			(GPIO_OUTPUT|GPIO_PUSHPULL|GPIO_SPEED_2MHz|GPIO_OUTPUT_CLEAR|GPIO_PORTA|GPIO_PIN8)
-#define GPIO_OTGFS_VBUS		(GPIO_INPUT|GPIO_FLOAT|GPIO_SPEED_100MHz|GPIO_OPENDRAIN|GPIO_PORTA|GPIO_PIN9)
+	virtual int	read(unsigned address, void *data, unsigned count);
+
+	int get_voltage_1(uint16_t *value_out);
+	int get_voltage_2(uint16_t *value_out);
+	int get_status(uint16_t *value_out)
+	int get_temperature(uint16_t *value_out)
+	int get_voltage_cell_1(uint16_t *value_out)
+	int get_voltage_cell_2(uint16_t *value_out)
+	int get_max_charge_voltage(uint16_t *value_out)
+	int get_rated_capacity(uint16_t *value_out)
+	int get_state_of_charge(uint16_t *value_out)
+	int get_remaining_capacity(uint16_t *value_out)
+};
+
+int SimToo_SmartBattery_I2C::read_uint16(uint8_t register_address_in, void *data_out, uint8_t byte_count_in)
+{
+	uint8_t _cmd = register_address_in;
+	return transfer(&_cmd, 1, (uint8_t *)data_out, byte_count_in);
+}
 
 
-/* High-resolution timer */
-#define HRT_TIMER			8	/* use timer8 for the HRT */
-#define HRT_TIMER_CHANNEL	1	/* use capture/compare channel */
+
+int SimToo_SmartBattery_I2C::get_voltage_1(uint16_t *value_out)
+{
+	uint8_t _register_address = REGISTER_ADDRESS_VOLTAGE_1;
+	return read_uint16(&_register_address, 1, (uint8_t *)value_out, 2);
+}
 
 
-#define PX4_I2C_BUS_MTD	1
 
-//#define BOARD_ENABLE_CONSOLE_BUFFER
-//#define BOARD_CONSOLE_BUFFER_SIZE (1024*3)
-
-#define BOARD_HAS_PWM	DIRECT_PWM_OUTPUT_CHANNELS
-
-/* This board provides a DMA pool and APIs */
-#define BOARD_DMA_ALLOC_POOL_SIZE 5120
-
-// todo: check DShot for motors
-//#define BOARD_DSHOT_MOTOR_ASSIGNMENT {3, 2, 1, 0, 4, 5};
-
-__BEGIN_DECLS
-
-#ifndef __ASSEMBLY__
-
-#define board_peripheral_reset(ms)
-
-extern void board_spi_init_hardware(void);
-extern int board_spi_init_interface(void);
-
-extern void stm32_spiinitialize(void);
-
-extern void stm32_usbinitialize(void);
-
-#include <px4_platform_common/board_common.h>
-
-#endif /* __ASSEMBLY__ */
-
-__END_DECLS
-
+int SimToo_SmartBattery_I2C::get_voltage_2(uint16_t *value_out)
+{
+	uint8_t _register_address = REGISTER_ADDRESS_VOLTAGE_2;
+	return read_uint16(&_register_address, 1, (uint8_t *)value_out, 2);
+}
 
 
 

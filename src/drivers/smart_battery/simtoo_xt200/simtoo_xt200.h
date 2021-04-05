@@ -1,6 +1,6 @@
 /****************************************************************************
  *
- *   Copyright (C) 2016 PX4 Development Team. All rights reserved.
+ *   Copyright (c) 2021 PX4 Development Team. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions
@@ -31,27 +31,69 @@
  *
  ****************************************************************************/
 
-//#include <px4_arch/io_timer_hw_description.h>
-//constexpr io_timers_t io_timers[MAX_IO_TIMERS] = {
-//// DMA conflicting with UART5
-///*
-//	initIOTimer(Timer::Timer1, DMA{DMA::Index2, DMA::Stream6, DMA::Channel6}),
-//	initIOTimer(Timer::Timer4, DMA{DMA::Index1, DMA::Stream6, DMA::Channel2}),
-//*/
-//	initIOTimer(Timer::Timer1),
-//	initIOTimer(Timer::Timer4),
-//};
-//
-//
-//constexpr timer_io_channels_t timer_io_channels[MAX_TIMER_IO_CHANNELS] = {
-//	initIOTimerChannelOutputClear(io_timers, {Timer::Timer1, Timer::Channel1}, {GPIO::PortA, GPIO::Pin8}),
-//	initIOTimerChannelOutputClear(io_timers, {Timer::Timer1, Timer::Channel3}, {GPIO::PortB, GPIO::Pin1}),
-//	initIOTimerChannelOutputClear(io_timers, {Timer::Timer4, Timer::Channel1}, {GPIO::PortB, GPIO::Pin6}),
-//	initIOTimerChannelOutputClear(io_timers, {Timer::Timer4, Timer::Channel2}, {GPIO::PortB, GPIO::Pin7}),
-//	initIOTimerChannelOutputClear(io_timers, {Timer::Timer4, Timer::Channel3}, {GPIO::PortB, GPIO::Pin8}),
-//	initIOTimerChannelOutputClear(io_timers, {Timer::Timer4, Timer::Channel4}, {GPIO::PortB, GPIO::Pin9}),
-//};
-//
-//
-//constexpr io_timers_channel_mapping_t io_timers_channel_mapping =
-//	initIOTimerChannelMapping(io_timers, timer_io_channels);
+/**
+ * @file simtoo_smartbattery.h
+ *
+ * SimToo XT200 smart battery registers.
+ *
+ */
+
+#pragma once
+
+#include <lib/drivers/device/Device.hpp>
+
+#define DEVICE_ADDRESS							0x0B;
+
+#define REGISTER_ADDRESS_VOLTAGE_1				0x01
+#define REGISTER_ADDRESS_VOLTAGE_2				0x02
+#define REGISTER_ADDRESS_STATUS					0x03
+#define REGISTER_ADDRESS_TEMPERATURE			0x04
+#define REGISTER_ADDRESS_VOLTAGE_CELL_1			0x0C
+#define REGISTER_ADDRESS_VOLTAGE_CELL_2			0x0D
+#define REGISTER_ADDRESS_MAX_CHARGE_VOLTAGE		0x10
+#define REGISTER_ADDRESS_RATED_CAPACITY			0x11
+#define REGISTER_ADDRESS_STATE_OF_CHARGE		0x12
+#define REGISTER_ADDRESS_REMAINING_CAPACITY		0x13
+#define REGISTER_ADDRESS_CHIP_MANUFACTURER		0x21
+#define REGISTER_ADDRESS_PRODUCT_NAME			0x23
+#define REGISTER_ADDRESS_CELL_TYPE				0x24
+
+//extern device::Device *SimToo_SmartBattery_I2C_interface(int bus, int bus_frequency);
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

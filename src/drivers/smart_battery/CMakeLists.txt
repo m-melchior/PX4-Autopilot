@@ -1,6 +1,6 @@
 ############################################################################
 #
-#   Copyright (c) 2015 PX4 Development Team. All rights reserved.
+#   Copyright (c) 2017 PX4 Development Team. All rights reserved.
 #
 # Redistribution and use in source and binary forms, with or without
 # modification, are permitted provided that the following conditions
@@ -31,19 +31,4 @@
 #
 ############################################################################
 
-add_library(drivers_board
-	board_init.c
-	board_i2c.cpp
-	board_mtd.cpp
-	board_spi.cpp
-	board_tim.cpp
-	board_usb.c
-)
-
-target_link_libraries(drivers_board
-	PRIVATE
-		arch_spi
-		#nuttx_arch
-		#nuttx_drivers
-		px4_layer
-)
+add_subdirectory(simtoo_xt200)

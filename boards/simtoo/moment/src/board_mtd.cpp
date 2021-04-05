@@ -1,6 +1,6 @@
 /****************************************************************************
  *
- *   Copyright (c) 2012-2016 PX4 Development Team. All rights reserved.
+ *   Copyright (C) 2020 PX4 Development Team. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions
@@ -31,106 +31,63 @@
  *
  ****************************************************************************/
 
-/**
- * @file board_config.h
- *
- * Board internal definitions
- */
-
-#pragma once
-
-/****************************************************************************************************
- * Included Files
- ****************************************************************************************************/
-
-#include <px4_platform_common/px4_config.h>
-#include <nuttx/compiler.h>
-#include <stdint.h>
-
-//#include "board_i2c.h"
-//#include "board_spi.h"
-
-#define DIRECT_PWM_OUTPUT_CHANNELS	6
-
-#define GPIO_MINE			(GPIO_OUTPUT|GPIO_PUSHPULL|GPIO_SPEED_2MHz|GPIO_OUTPUT_CLEAR|GPIO_PORTA|GPIO_PIN8)
-#define GPIO_OTGFS_VBUS		(GPIO_INPUT|GPIO_FLOAT|GPIO_SPEED_100MHz|GPIO_OPENDRAIN|GPIO_PORTA|GPIO_PIN9)
-
-
-/* High-resolution timer */
-#define HRT_TIMER			8	/* use timer8 for the HRT */
-#define HRT_TIMER_CHANNEL	1	/* use capture/compare channel */
-
-
-#define PX4_I2C_BUS_MTD	1
-
-//#define BOARD_ENABLE_CONSOLE_BUFFER
-//#define BOARD_CONSOLE_BUFFER_SIZE (1024*3)
-
-#define BOARD_HAS_PWM	DIRECT_PWM_OUTPUT_CHANNELS
-
-/* This board provides a DMA pool and APIs */
-#define BOARD_DMA_ALLOC_POOL_SIZE 5120
-
-// todo: check DShot for motors
-//#define BOARD_DSHOT_MOTOR_ASSIGNMENT {3, 2, 1, 0, 4, 5};
-
-__BEGIN_DECLS
-
-#ifndef __ASSEMBLY__
-
-#define board_peripheral_reset(ms)
-
-extern void board_spi_init_hardware(void);
-extern int board_spi_init_interface(void);
-
-extern void stm32_spiinitialize(void);
-
-extern void stm32_usbinitialize(void);
-
-#include <px4_platform_common/board_common.h>
-
-#endif /* __ASSEMBLY__ */
-
-__END_DECLS
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+#include <nuttx/spi/spi.h>
+#include <px4_platform_common/px4_manifest.h>
+//                                                                      KiB		BS    	nB
+static const px4_mft_device_t i2c2 = {				// 24xx256 on Base  256K
+	.bus_type = px4_mft_device_t::I2C,
+	.devid    = PX4_MK_I2C_DEVID(2, 0x50)
+};
+
+
+static const px4_mtd_entry_t fmu_eeprom = {
+	.device = &i2c2,
+	.npart = 2,
+	.partd = {
+		{
+			.type = MTD_PARAMETERS,
+			.path = "/fs/mtd_params",
+			.nblocks = 32 // 32 blocks x 32 bytes = 1024 bytes
+		},
+
+		{
+			.type = MTD_WAYPOINTS,
+			.path = "/fs/mtd_waypoints",
+			.nblocks = 32 // 32 blocks x 32 bytes = 1024 bytes
+		},
+
+		{
+			.type = MTD_CALDATA,
+			.path = "/fs/mtd_caldata",
+			.nblocks = 248 // 248 blocks x 32 bytes = 7936 bytes
+		},
+
+		{
+			.type = MTD_ID,
+			.path = "/fs/mtd_id",
+			.nblocks = 8 // 8 blocks x 32 bytes = 256 bytes
+		}
+	},
+};
+
+static const px4_mtd_manifest_t board_mtd_config = {
+	.nconfigs   = 1,
+	.entries = {
+		&fmu_eeprom,
+	}
+};
+
+static const px4_mft_entry_s mtd_mft = {
+	.type = MTD,
+	.pmft = (void *) &board_mtd_config,
+};
+
+static const px4_mft_s mft = {
+	.nmft = 1,
+	.mfts = &mtd_mft
+};
+
+const px4_mft_s *board_get_manifest(void)
+{
+	return &mft;
+}

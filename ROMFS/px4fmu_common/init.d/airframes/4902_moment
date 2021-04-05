@@ -1,6 +1,6 @@
 #!/bin/sh
 #
-# @name Simtoo Move 007
+# @name Simtoo Moment 007
 #
 # @type Quadrotor x
 # @class Copter
@@ -13,6 +13,7 @@
 #
 # @maintainer Michael Melchior <michael@aviate-it.com>
 #
+# check https://docs.px4.io/master/en/advanced_config/parameter_reference.html for details about the parameters
 
 . ${R}etc/init.d/rc.mc_defaults
 
@@ -20,16 +21,58 @@ set MIXER quad_x
 
 set PWM_OUT 1234
 
-#param set-default BAT_CAPACITY 2900
-#param set-default BAT_N_CELLS 1
-# todo: check messages from batter i2c
-##param set-default BAT_SOURCE 1
 
 # circuit breakers
-#param set-default CBRK_SUPPLY_CHK 894281
+param set-default CBRK_SUPPLY_CHK 894281			// turn off power supply check
 #param set-default CBRK_USB_CHK 197848
 
-#param set-default COM_RC_IN_MODE 1
+
+
+MNT_DO_STAB 1
+MNT_MAN_PITCH 1
+MNT_MAN_ROLL 0
+MNT_MAN_YAW 0
+MNT_MODE_IN 0 // -1 Disabled, 0 Auto, 1 RC, 2 MAVLink_ROI, 3 MAVLink_DO_MOUNT, 4 MAVLink gimbal
+MNT_MODE_OUT 0 // 0 AUX
+MNT_RANGE_PITCH 90
+
+
+
+param set-default PWM_AUX_RATE1 400
+param set-default PWM_AUX_RATE2 400
+param set-default PWM_AUX_RATE3 400
+param set-default PWM_AUX_RATE4 400
+param set-default PWM_AUX_RATE5 50
+param set-default PWM_AUX_RATE6 50
+
+param set-default PWM_MAIN_DIS1 0
+param set-default PWM_MAIN_DIS2 0
+param set-default PWM_MAIN_DIS3 0
+param set-default PWM_MAIN_DIS4 0
+param set-default PWM_MAIN_DIS5 0
+param set-default PWM_MAIN_DIS6 0
+
+param set-default PWM_MAIN_MIN1 1000
+param set-default PWM_MAIN_MIN2 1000
+param set-default PWM_MAIN_MIN3 1000
+param set-default PWM_MAIN_MIN4 1000
+
+param set-default PWM_MAIN_MAX1 1844
+param set-default PWM_MAIN_MAX2 1844
+param set-default PWM_MAIN_MAX3 1844
+param set-default PWM_MAIN_MAX4 1844
+
+
+param set-default BAT1_CAPACITY 2900 // rated capacity of the simtoo smart battery
+param set-default BAT1_N_CELLS 2 // the simtoo smart battery has two cells @4.35V
+param set-default BAT_SOURCE 1 // external --> deprecated
+param set-default BAT_R_INTERNAL 0.06 // needs to be verified! --> deprecated
+param set-default BAT1_SOURCE 1 // external
+param set-default BAT1_R_INTERNAL 0.06 // needs to be verified!
+
+// https://docs.px4.io/master/en/getting_started/rc_transmitter_receiver.html
+// Set to disable checking for a remote
+param set-default COM_RC_IN_MODE 1
 
 # todo: check values
 ##param set-default EKF2_ABL_LIM 2
