@@ -50,7 +50,7 @@ constexpr px4_spi_bus_t px4_spi_buses[SPI_BUS_MAX_BUS_ITEMS] = {
 	}),
 
 	initSPIBus(SPI::Bus::SPI2, {
-		initSPIDevice(DRV_BARO_DEVTYPE_BMP280, SPI::CS{GPIO::PortB, GPIO::Pin12}),
+		initSPIDevice(DRV_BARO_DEVTYPE_FBM, SPI::CS{GPIO::PortB, GPIO::Pin12}),
 	}),
 }; // constexpr px4_spi_bus_t px4_spi_buses[SPI_BUS_MAX_BUS_ITEMS]
 
@@ -72,7 +72,7 @@ int board_spi_init_interface(void)
 		return -ENODEV;
 	}
 
-	// Default SPI1 to 1MHz
+	// Default SPI1 to 10MHz
 	SPI_SETFREQUENCY(spi1, 10000000);
 	SPI_SETBITS(spi1, 8);
 	SPI_SETMODE(spi1, SPIDEV_MODE3);
@@ -89,13 +89,11 @@ int board_spi_init_interface(void)
 	// Default SPI2 to 1MHz
 	SPI_SETFREQUENCY(spi2, 10000000);
 	SPI_SETBITS(spi2, 8);
-	SPI_SETMODE(spi2, SPIDEV_MODE3);
+	// setting mode0 here seems to be overridden, needs to be stated in device_main again!
+	SPI_SETMODE(spi2, SPIDEV_MODE0);
 
 	return OK;
 } // int board_spi_init_interface(void)
-
-
-
 
 
 

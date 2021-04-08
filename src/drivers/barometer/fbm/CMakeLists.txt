@@ -36,7 +36,7 @@ px4_add_module(
 	MAIN fbm
 	SRCS
 		fbm_spi.cpp
-		fbm_i2c.cpp
+#		fbm_i2c.cpp
 		fbm.cpp
 		fbm_main.cpp
 	DEPENDS

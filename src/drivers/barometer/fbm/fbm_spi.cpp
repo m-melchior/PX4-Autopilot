@@ -1,6 +1,6 @@
 /****************************************************************************
  *
- *   Copyright (c) 2019 PX4 Development Team. All rights reserved.
+ *   Copyright (c) 2021 PX4 Development Team. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions
@@ -39,88 +39,339 @@
 
 #include <drivers/device/spi.h>
 
-#include "FBM.h"
+#include "fbm.h"
 
 
-/* SPI protocol address bits */
-#define DIR_READ			(1<<7)  //for set
-#define DIR_WRITE			~(1<<7) //for clear
-
-#pragma pack(push,1)
-struct spi_data_s {
-	uint8_t addr;
-	struct data_s data;
-};
-
-struct spi_calibration_s {
-	uint8_t addr;
-	struct calibration_s cal;
-};
-#pragma pack(pop)
-
-class FBM_SPI: public device::SPI, public IFBM
-{
+class FBM_SPI: public device::SPI, public IFBM {
 public:
 	FBM_SPI(uint8_t bus, uint32_t device, int bus_frequency, spi_mode_e spi_mode);
 	virtual ~FBM_SPI() = default;
 
 	int init();
 
-	uint8_t get_reg(uint8_t addr);
-	int get_reg_buf(uint8_t addr, uint8_t *buf, uint8_t len);
-	int set_reg(uint8_t value, uint8_t addr);
-	calibration_s *get_calibration(uint8_t addr);
+	int8_t read(uint8_t addr, uint8_t length, uint8_t *buffer);
+	int8_t write(uint8_t addr, uint8_t length, uint8_t *buffer);
+
+	int8_t set_cs();
+	int8_t check_chip_id();
+	int8_t reset();
+	int8_t get_calibration_data(fbm_calibration_data *calibration_data);
 
 	uint32_t get_device_id() const override { return device::SPI::get_device_id(); }
 
 	uint8_t get_device_address() const override { return device::SPI::get_device_address(); }
-private:
-	spi_calibration_s _cal;
-};
+}; // class FBM_SPI: public device::SPI, public IFBM {
 
-IFBM *FBM_spi_interface(uint8_t busnum, uint32_t device, int bus_frequency, spi_mode_e spi_mode)
-{
+
+
+// ************************************************************************
+IFBM *FBM_spi_interface(uint8_t busnum, uint32_t device, int bus_frequency, spi_mode_e spi_mode) {
 	return new FBM_SPI(busnum, device, bus_frequency, spi_mode);
-}
+} // IFBM *FBM_spi_interface(uint8_t busnum, uint32_t device, int bus_frequency, spi_mode_e spi_mode) {
 
+
+
+// ************************************************************************
 FBM_SPI::FBM_SPI(uint8_t bus, uint32_t device, int bus_frequency, spi_mode_e spi_mode) :
-	SPI(DRV_BARO_DEVTYPE_FBM, MODULE_NAME, bus, device, spi_mode, bus_frequency)
-{
-}
+	SPI(DRV_BARO_DEVTYPE_FBM, MODULE_NAME, bus, device, spi_mode, bus_frequency) {
+} // FBM_SPI::FBM_SPI
 
-int FBM_SPI::init()
-{
-	return SPI::init();
-};
 
-uint8_t FBM_SPI::get_reg(uint8_t addr)
-{
-	uint8_t cmd[2] = { (uint8_t)(addr | DIR_READ), 0}; //set MSB bit
-	transfer(&cmd[0], &cmd[0], 2);
 
-	return cmd[1];
-}
+// ************************************************************************
+int FBM_SPI::init() {
+	int _result = PX4_OK;
 
-int FBM_SPI::get_reg_buf(uint8_t addr, uint8_t *buf, uint8_t len)
-{
-	uint8_t cmd[1] = {(uint8_t)(addr | DIR_READ)};
-	return transfer(&cmd[0], buf, len);
-}
+	_result = SPI::init();
+	if(_result != PX4_OK) {
+		PX4_ERR("FBM SPI init failed");
+		return -EIO;
+	} // if(_result != PX4_OK) {
 
-int FBM_SPI::set_reg(uint8_t value, uint8_t addr)
-{
-	uint8_t cmd[2] = { (uint8_t)(addr & DIR_WRITE), value}; //clear MSB bit
-	return transfer(&cmd[0], nullptr, 2);
-}
+	_result = set_cs();
+	if(_result != PX4_OK) {
+		PX4_ERR("FBM set_cs failed");
+		return -EIO;
+	} // if(_result != PX4_OK) {
 
-calibration_s *FBM_SPI::get_calibration(uint8_t addr)
-{
-	_cal.addr = addr | DIR_READ;
+	_result = check_chip_id();
+	if(_result != PX4_OK) {
+		PX4_ERR("FBM wrong chip id");
+		return -EIO;
+	} // if(_result != PX4_OK) {
 
-	if (transfer((uint8_t *)&_cal, (uint8_t *)&_cal, sizeof(struct spi_calibration_s)) == OK) {
-		return &(_cal.cal);
+	return _result;
+} // int8_t FBM_SPI::init() {
 
-	} else {
-		return nullptr;
+
+
+// ************************************************************************
+int8_t FBM_SPI::read(uint8_t addr, uint8_t length, uint8_t *buffer) {
+	int8_t _result = PX4_OK;
+
+	uint8_t _cmd = 0;
+	uint8_t _buffer[length + 2] = {0};
+
+
+	switch (length) {
+		case 1:
+			_cmd = FBM_SPI_READ | FBM_SPI_1BYTE;
+			break;
+		case 2:
+			_cmd = FBM_SPI_READ | FBM_SPI_2BYTE;
+			break;
+		case 3:
+			_cmd = FBM_SPI_READ | FBM_SPI_3BYTE;
+			break;
+		default:
+			_cmd = FBM_SPI_READ | FBM_SPI_4BYTE;
 	}
-}
+
+	_buffer[0] = _cmd;
+	_buffer[1] = addr + (length - 1);
+
+	_result = transfer((uint8_t*)&_buffer, (uint8_t*)&_buffer, length + 2);
+
+	if (_result != PX4_OK) {
+		return _result;
+	}
+
+	memcpy (buffer, &_buffer[2], length);
+
+	return _result;
+} // int8_t FBM_SPI::read(uint8_t addr, uint8_t length, uint8_t *buffer) {
+
+
+
+//// ************************************************************************
+//int8_t FBM_SPI::read(uint8_t addr, uint8_t length, uint8_t *buffer) {
+//	int8_t _result = PX4_OK;
+//
+//	uint8_t _buffer_tx[2] = {0};
+//	uint8_t _cmd = 0;
+//	uint8_t _tmp[length];
+//	memset(&_tmp, 0xAA, length);
+//
+//
+//	switch (length) {
+//		case 1:
+//			_cmd = FBM_SPI_READ | FBM_SPI_1BYTE;
+//			break;
+//		case 2:
+//			_cmd = FBM_SPI_READ | FBM_SPI_2BYTE;
+//			break;
+//		case 3:
+//			_cmd = FBM_SPI_READ | FBM_SPI_3BYTE;
+//			break;
+//		default:
+//			_cmd = FBM_SPI_READ | FBM_SPI_4BYTE;
+//	}
+//
+//	_buffer_tx[0] = _cmd;
+//	_buffer_tx[1] = addr + (length - 1);
+//
+//	_result = transfer((uint8_t*)&_buffer_tx, nullptr, 2);
+//	if (_result != PX4_OK) {
+//		return _result;
+//	}
+//
+////	usleep(3);
+//
+//	_result = transfer((uint8_t*)&_tmp, buffer, length);
+//	if (_result != PX4_OK) {
+//		return _result;
+//	}
+//
+//	return _result;
+//} // int8_t FBM_SPI::read(uint8_t addr, uint8_t length, uint8_t *buffer) {
+
+
+
+// ************************************************************************
+int8_t FBM_SPI::write(uint8_t addr, uint8_t length, uint8_t *buffer) {
+	int8_t _result = PX4_OK;
+
+	uint8_t _buffer[length + 2];
+	uint8_t _cmd = 0;
+
+	memset(&_buffer, 0, length + 2);
+
+	switch (length) {
+		case 1:
+			_cmd = FBM_SPI_WRITE | FBM_SPI_1BYTE;
+			break;
+		case 2:
+			_cmd = FBM_SPI_WRITE | FBM_SPI_2BYTE;
+			break;
+		case 3:
+			_cmd = FBM_SPI_WRITE | FBM_SPI_3BYTE;
+			break;
+		default:
+			_cmd = FBM_SPI_WRITE | FBM_SPI_4BYTE;
+	}
+
+	_buffer[0] = _cmd;
+	_buffer[1] = addr + length - 1;
+	memcpy(&_buffer[2], buffer, length);
+
+	_result = transfer(&_buffer[0], nullptr, length + 2);
+
+	if (_result != PX4_OK) {
+		return _result;
+	}
+
+	return _result;
+} // int8_t FBM_SPI::write(uint8_t addr, uint8_t length, uint8_t *buffer) {
+
+
+
+// ************************************************************************
+int8_t FBM_SPI::get_calibration_data(struct fbm_calibration_data *calibration_data) {
+	uint8_t _result = PX4_OK;
+
+	uint16_t _values[10] = {0};
+	uint8_t _read_buffer[2] = {0};
+	uint8_t _parameter_index = 0;
+
+
+	for (_parameter_index = 0; _parameter_index < 9; _parameter_index++) {
+//		_result = _fbm_interface.bus_read(FBM_CALIBRATION_DATA_START0 + (_parameter_index * 2), 1, &_read_buffer[0]);
+		_result = read(FBM_CALIBRATION_DATA_START0 + (_parameter_index * 2), 1, &_read_buffer[0]);
+		if (_result != PX4_OK) {
+			return _result;
+		}
+
+//		_result = _fbm_interface.bus_read(FBM_CALIBRATION_DATA_START1 + (_parameter_index * 2), 1, &_read_buffer[1]);
+		_result = read(FBM_CALIBRATION_DATA_START1 + (_parameter_index * 2), 1, &_read_buffer[1]);
+		if (_result != PX4_OK) {
+			return _result;
+		}
+
+		_values[_parameter_index] = ((uint8_t)_read_buffer[0] << 8 | _read_buffer[1]);
+	} // for (_parameter_index = 0; _parameter_index < 9; _parameter_index++) {
+
+//	_result = _fbm_interface.bus_read(FBM_CALIBRATION_DATA_START2, 1, &_read_buffer[0]);
+	_result = read(FBM_CALIBRATION_DATA_START2, 1, &_read_buffer[0]);
+	if (_result != PX4_OK) {
+		return _result;
+	}
+
+//	_result = _fbm_interface.bus_read(FBM_CALIBRATION_DATA_START3, 1, &_read_buffer[1]);
+	_result = read(FBM_CALIBRATION_DATA_START3, 1, &_read_buffer[1]);
+	if (_result != PX4_OK) {
+		return _result;
+	}
+
+	_values[9] = ((uint8_t)_read_buffer[0] << 8 | _read_buffer[1]);
+
+	calibration_data->C0 = _values[0] >> 4;
+	calibration_data->C1 = ((_values[1] & 0xFF00) >> 5) | (_values[2] & 7);
+	calibration_data->C2 = ((_values[1] & 0xFF) << 1) | (_values[4] & 1);
+	calibration_data->C3 = _values[2] >> 3;
+	calibration_data->C4 = ((uint32_t)_values[3] << 2) | (_values[0] & 3);
+	calibration_data->C5 = _values[4] >> 1;
+	calibration_data->C6 = _values[5] >> 3;
+	calibration_data->C7 = ((uint32_t)_values[6] << 3) | (_values[5] & 7);
+	calibration_data->C8 = _values[7] >> 3;
+	calibration_data->C9 = _values[8] >> 2;
+	calibration_data->C10 = ((_values[9] & 0xFF00) >> 6) | (_values[8] & 3);
+	calibration_data->C11 = _values[9] & 0xFF;
+	calibration_data->C12 = ((_values[0] & 0x0C) << 1) | (_values[7] & 7);
+
+	return _result;
+} // int8_t FBM_SPI::get_calibration_data(fbm_calibration_data *calibration_data) {
+
+
+
+// ************************************************************************
+int8_t FBM_SPI::set_cs() {
+	uint8_t _result = PX4_OK;
+	uint8_t _value_tx;
+
+	_value_tx = FBM_SPI_CTRL_REG_SDO_ACTIVE_EN;
+	_result = write(FBM_SPI_CTRL_REG, 1, &_value_tx);
+
+	if (_result != PX4_OK) {
+		return _result;
+	}
+
+	return _result;
+} // int8_t FBM_SPI::init_cs() {
+
+
+
+// ************************************************************************
+int8_t FBM_SPI::check_chip_id() {
+	uint8_t _result = PX4_OK;
+	uint8_t _value_rx;
+
+	_result = read(FBM_CHIP_ID_REG, 1, &_value_rx);
+
+	if (_result != PX4_OK) {
+		return _result;
+	}
+
+	if (_value_rx != FBM_CHIP_ID) {
+		return PX4_ERROR;
+	}
+
+	return _result;
+} // int8_t FBM_SPI::check_chip_id() {
+
+
+
+// ************************************************************************
+int8_t FBM_SPI::reset() {
+	uint8_t _result = PX4_OK;
+	uint8_t _cmd = 0;
+
+	_cmd = FBM_SOFTRESET_CMD;
+	write(FBM_SOFTRESET_REG, sizeof(uint8_t), &_cmd);
+	if (_result != PX4_OK) {
+		return _result;
+	}
+
+	return _result;
+} // int8_t FBM_SPI::reset() {
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

@@ -3,10 +3,9 @@
 # boar specific sensors init
 #------------------------------------------------------------------------------
 
-# IMU
+# Baro
 // -s SPI internal
-// -R rotation none
-mpu6500 -s -R 0 start
+fbm -s start
 
 # Compass
 // -I I2C internal
@@ -14,9 +13,13 @@ mpu6500 -s -R 0 start
 // -T => cli.custom1=1 => enable_temp_compensation
 hmc5883 -T -I -R 0 start
 
-# Baro not known, yet
-#bmp280 -s start
+# IMU
+// -s SPI internal
+// -R rotation none
+mpu6500 -s -R 0 start
 
 # Smart Battery
+// -I I2C internal
+// -a chip ID of the battery
 simtoo_xt200 -I -a 0x0B start
 

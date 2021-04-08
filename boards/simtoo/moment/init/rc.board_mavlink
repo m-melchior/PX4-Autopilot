@@ -6,6 +6,7 @@
 # Start MAVLink on the USB port
 mavlink start -d /dev/ttyACM0
 
+// needed for setting the baud rate to 115200, would be different otherwise
 mavlink start -d /dev/ttyS1 -b 115200
 
 #mavlink start -d /dev/ttyS1 -b 115200 -m osd

@@ -203,21 +203,21 @@
  * E_MISO, E_MOSI, E_SCK exposed on headers
  */
 // MPU
-//#define GPIO_SPI1_MISO	(GPIO_SPI1_MISO_1 | GPIO_SPEED_50MHz)			// PA6
-//#define GPIO_SPI1_MOSI	(GPIO_SPI1_MOSI_1 | GPIO_SPEED_50MHz)			// PA7
-//#define GPIO_SPI1_SCK	(GPIO_SPI1_SCK_1 | GPIO_SPEED_50MHz)			// PA5
-#define GPIO_SPI1_MISO	(GPIO_SPI1_MISO_1)								// PA6
-#define GPIO_SPI1_MOSI	(GPIO_SPI1_MOSI_1)								// PA7
-#define GPIO_SPI1_SCK	(GPIO_SPI1_SCK_1)								// PA5
+#define GPIO_SPI1_MISO	(GPIO_SPI1_MISO_1 | GPIO_SPEED_50MHz)			// PA6
+#define GPIO_SPI1_MOSI	(GPIO_SPI1_MOSI_1 | GPIO_SPEED_50MHz)			// PA7
+#define GPIO_SPI1_SCK	(GPIO_SPI1_SCK_1 | GPIO_SPEED_50MHz)			// PA5
+//#define GPIO_SPI1_MISO	(GPIO_SPI1_MISO_1)								// PA6
+//#define GPIO_SPI1_MOSI	(GPIO_SPI1_MOSI_1)								// PA7
+//#define GPIO_SPI1_SCK	(GPIO_SPI1_SCK_1)								// PA5
 #define GPIO_SPI1_NSS	GPIO_SPI1_NSS_2									// PA4
 
 // Baro
-//#define GPIO_SPI2_MISO	(GPIO_SPI2_MISO_1 | GPIO_SPEED_50MHz)			// PB14
-//#define GPIO_SPI2_MOSI	(GPIO_SPI2_MOSI_1 | GPIO_SPEED_50MHz)			// PB15
-//#define GPIO_SPI2_SCK	(GPIO_SPI2_SCK_2 | GPIO_SPEED_50MHz)			// PB13
-#define GPIO_SPI2_MISO	(GPIO_SPI2_MISO_1)								// PB14
-#define GPIO_SPI2_MOSI	(GPIO_SPI2_MOSI_1)								// PB15
-#define GPIO_SPI2_SCK	(GPIO_SPI2_SCK_2)								// PB13
+#define GPIO_SPI2_MISO	(GPIO_SPI2_MISO_1 | GPIO_SPEED_50MHz)			// PB14
+#define GPIO_SPI2_MOSI	(GPIO_SPI2_MOSI_1 | GPIO_SPEED_50MHz)			// PB15
+#define GPIO_SPI2_SCK	(GPIO_SPI2_SCK_2 | GPIO_SPEED_50MHz)			// PB13
+//#define GPIO_SPI2_MISO	(GPIO_SPI2_MISO_1)								// PB14
+//#define GPIO_SPI2_MOSI	(GPIO_SPI2_MOSI_1)								// PB15
+//#define GPIO_SPI2_SCK	(GPIO_SPI2_SCK_2)								// PB13
 #define GPIO_SPI2_NSS	GPIO_SPI2_NSS_1									// PB12
 
 
@@ -230,7 +230,7 @@
 #define GPIO_USART2_TX	GPIO_USART2_TX_1	// PA2
 
 // ttyS1 WiFi AP 115200
-// redundant / no alternate pin config
+// redundant / no alternate pin config available
 //#define GPIO_UART5_RX	GPIO_UART5_RX		// PD2
 //#define GPIO_UART5_TX	GPIO_UART5_TX		// PC12
 

@@ -175,6 +175,7 @@
 #define DRV_DIST_DEVTYPE_SRF05 0x9b
 
 #define DRV_BAT_DEVTYPE_SIMTOO   0x9c
+#define DRV_BARO_DEVTYPE_FBM     0x9d
 
 #define DRV_DEVTYPE_UNUSED		0xff
 

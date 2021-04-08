@@ -153,23 +153,12 @@ __EXPORT int board_app_initialize(uintptr_t arg)
 	ts.tv_nsec = 1000000;
 
 	hrt_call_every(&serial_dma_call,
-		       ts_to_abstime(&ts),
-		       ts_to_abstime(&ts),
-		       (hrt_callout)stm32_serial_dma_poll,
-		       NULL);
+				   ts_to_abstime(&ts),
+				   ts_to_abstime(&ts),
+				   (hrt_callout)stm32_serial_dma_poll,
+				   NULL);
 
-
-	if (board_hardfault_init(2, true) != 0) {
-		stm32_gpiowrite(GPIO_MINE, 1);
-	}
-
-
-	int ret = board_spi_init_interface();
-
-	if (ret != OK) {
-		stm32_gpiowrite(GPIO_MINE, 1);
-		return ret;
-	}
+	board_spi_init_interface();
 
 	px4_platform_configure();
 

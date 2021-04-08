@@ -13,7 +13,7 @@ px4_add_board(
 		TEL1:/dev/ttyS1
 		TEL2:/dev/ttyS0
 	DRIVERS
-		#barometer/bmp280
+		barometer/fbm
 		gps
 		imu/invensense/mpu6500
 		magnetometer/hmc5883
@@ -24,7 +24,7 @@ px4_add_board(
 	MODULES
 #		airspeed_selector
 #		attitude_estimator_q
-#-		battery_status
+#-		battery_status					# only for ADC based battery 
 		commander						# https:#dev.px4.io/v1.9.0/en/middleware/modules_system.html#commander
 		dataman							# https:#dev.px4.io/v1.9.0/en/middleware/modules_system.html#dataman
 		ekf2							# https:#dev.px4.io/v1.9.0/en/middleware/modules_estimator.html#ekf2
@@ -54,7 +54,6 @@ px4_add_board(
 		#esc_calib
 		#gpio
 		#hardfault_log
-#-		i2cdetect						# check for battery
 		#led_control
 		#mft							# check wiki for correct command (mft vs mfd)
 		#mixer
