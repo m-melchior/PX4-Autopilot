@@ -1,0 +1,13 @@
+#!/bin/sh
+#
+# board specific defaults
+#------------------------------------------------------------------------------
+
+# system_power unavailable
+# already set in airframe config, but doesn't seem to work there
+param set-default CBRK_SUPPLY_CHK 894281
+
+param set-default COM_ARM_SDCARD 0
+param set-default COM_CPU_MAX 0
+
+param set-default SYS_AUTOSTART 4902

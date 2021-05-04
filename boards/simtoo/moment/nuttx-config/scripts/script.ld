@@ -1,5 +1,5 @@
 /****************************************************************************
- * configs/crazyflie/scripts/ld.script
+ * boards/simtoo/moment/nuttx-config/scripts/script.ld
  *
  *   Copyright (C) 2011 Gregory Nutt. All rights reserved.
  *   Author: Gregory Nutt <gnutt@nuttx.org>
@@ -64,7 +64,6 @@ EXTERN(_vectors)	/* force the vectors to be included in the output */
  * code pulled in by libgcc.a requires it (and that code cannot be easily avoided).
  */
 EXTERN(abort)
-EXTERN(_bootdelay_signature)
 
 SECTIONS
 {
@@ -99,6 +98,14 @@ SECTIONS
                 _einit = ABSOLUTE(.);
         } > flash
 
+	/*
+	 * Construction data for parameters.
+	 */
+	__param ALIGN(4): {
+		__param_start = ABSOLUTE(.);
+		KEEP(*(__param*))
+		__param_end = ABSOLUTE(.);
+	} > flash
 
 	.ARM.extab : {
 		*(.ARM.extab*)

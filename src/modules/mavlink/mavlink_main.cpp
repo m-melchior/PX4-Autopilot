@@ -77,6 +77,10 @@
 #define MAX_DATA_RATE                  10000000        ///< max data rate in bytes/s
 #define MAIN_LOOP_DELAY                10000           ///< 100 Hz @ 1000 bytes/s data rate
 
+/* back off 1800 ms to avoid running into the USB setup timing */
+#define USB_TIMEOUT						1800U * 1000U
+#define USB_DELAY						50000
+
 static pthread_mutex_t mavlink_module_mutex = PTHREAD_MUTEX_INITIALIZER;
 
 Mavlink *mavlink_module_instances[MAVLINK_COMM_NUM_BUFFERS] {};
@@ -502,9 +506,9 @@ Mavlink::mavlink_open_uart(const int baud, const char *uart_name, const FLOW_CON
 		return -EINVAL;
 	}
 
-	/* back off 1800 ms to avoid running into the USB setup timing */
-	while (_is_usb_uart && hrt_absolute_time() < 1800U * 1000U) {
-		px4_usleep(50000);
+	/* back off to avoid running into the USB setup timing */
+	while (_is_usb_uart && hrt_absolute_time() < USB_TIMEOUT) {
+		px4_usleep(USB_DELAY);
 	}
 
 	/* open uart */

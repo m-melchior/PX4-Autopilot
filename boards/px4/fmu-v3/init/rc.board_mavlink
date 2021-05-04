@@ -5,3 +5,6 @@
 
 # Start MAVLink on the USB port
 mavlink start -d /dev/ttyACM0
+
+# start MAVLink on TELEM1 with baud rate 115200 for Wifi AP
+#mavlink start -d /dev/ttyS1 -b 115200
