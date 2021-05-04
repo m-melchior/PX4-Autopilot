@@ -32,6 +32,7 @@
  ****************************************************************************/
 
 #include <px4_arch/io_timer_hw_description.h>
+
 constexpr io_timers_t io_timers[MAX_IO_TIMERS] = {
 	initIOTimer(Timer::Timer1, DMA{DMA::Index2, DMA::Stream5, DMA::Channel6}),
 	// DMAMAP_TIM4_CH3 conflicting with DMAMAP_UART5_TX
@@ -39,17 +40,17 @@ constexpr io_timers_t io_timers[MAX_IO_TIMERS] = {
 
 //	initIOTimer(Timer::Timer1),
 //	initIOTimer(Timer::Timer4),
-};
+}; // constexpr io_timers_t io_timers[MAX_IO_TIMERS] = {
 
 
 constexpr timer_io_channels_t timer_io_channels[MAX_TIMER_IO_CHANNELS] = {
-	initIOTimerChannelOutputClear(io_timers, {Timer::Timer4, Timer::Channel3}, {GPIO::PortB, GPIO::Pin8}),	// J5P1
-	initIOTimerChannelOutputClear(io_timers, {Timer::Timer4, Timer::Channel4}, {GPIO::PortB, GPIO::Pin9}),	// J1P1
 	initIOTimerChannelOutputClear(io_timers, {Timer::Timer4, Timer::Channel1}, {GPIO::PortB, GPIO::Pin6}),	// J1P2
+	initIOTimerChannelOutputClear(io_timers, {Timer::Timer4, Timer::Channel3}, {GPIO::PortB, GPIO::Pin8}),	// J5P1
 	initIOTimerChannelOutputClear(io_timers, {Timer::Timer4, Timer::Channel2}, {GPIO::PortB, GPIO::Pin7}),	// J5P2
+	initIOTimerChannelOutputClear(io_timers, {Timer::Timer4, Timer::Channel4}, {GPIO::PortB, GPIO::Pin9}),	// J1P1
 	initIOTimerChannelOutputClear(io_timers, {Timer::Timer1, Timer::Channel3}, {GPIO::PortB, GPIO::Pin1}),	// J4P3, Pitch Servo Camera
 	initIOTimerChannelOutputClear(io_timers, {Timer::Timer1, Timer::Channel1}, {GPIO::PortA, GPIO::Pin8}),	// J6P3, not connected
-};
+}; // constexpr timer_io_channels_t timer_io_channels[MAX_TIMER_IO_CHANNELS] = {
 
 
 constexpr io_timers_channel_mapping_t io_timers_channel_mapping =

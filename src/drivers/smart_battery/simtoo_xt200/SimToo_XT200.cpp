@@ -222,18 +222,31 @@ void SimToo_XT200::resume()
 
 // **************************************************************************************************************
 int8_t SimToo_XT200::init_values() {
-	int32_t _cell_count = 2;
-
+	// ref msg/battery_status.msg for details
 	_battery_status = {};
 
-	param_get(param_find("BAT_CRIT_THR"), &_crit_thr);
-	param_get(param_find("BAT_EMERGEN_THR"), &_emergency_thr);
-	param_get(param_find("BAT_LOW_THR"), &_low_thr);
+	int32_t _cell_count = 2;
+
+	uint16_t _capacity = 2900;
+	// 0: power module
+	// 1; external
+	// 2: esc
+	uint8_t _source = 1;
+
+	param_get(param_find("BAT1_CRIT_THR"), &_crit_thr);
+	param_get(param_find("BAT1_EMERGEN_THR"), &_emergency_thr);
+	param_get(param_find("BAT1_LOW_THR"), &_low_thr);
+
+	// param_get doesn't work with uint??
+//	param_get(param_find("BAT1_CAPACITY"), &_capacity);
 //	param_get(param_find("BAT1_N_CELLS"), &_cell_count);
+//	param_get(param_find("BAT1_SOURCE"), &_source);
 
 	_battery_status.id = _instance_id;
+	_battery_status.capacity = _capacity;
 	_battery_status.cell_count = _cell_count;
 	_battery_status.connected = true;
+	_battery_status.source = _source;
 
 	return PX4_OK;
 } // int8_t SimToo_XT200::init_values() {
@@ -272,7 +285,7 @@ int8_t SimToo_XT200::update_data_set(uint8_t data_set_index_in) {
 extern "C" int simtoo_xt200_main(int argc, char *argv[]) {
 	using ThisDriver = SimToo_XT200;
 
-	BusCLIArguments _cli{true, false};
+	BusCLIArguments _cli{true, false}; // only I2C allowed
 	_cli.default_i2c_frequency = 100000;
 	_cli.i2c_address = DEVICE_ADDRESS;
 

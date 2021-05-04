@@ -258,7 +258,7 @@ public:
 
 	void 				RunImpl();
 private:
-	PX4Barometer		_px4_baro;
+	PX4Barometer		_px4_barometer;
 	IFBM				*_interface{nullptr};
 
 	FBM_STATE _state;

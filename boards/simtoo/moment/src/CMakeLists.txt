@@ -36,7 +36,7 @@ add_library(drivers_board
 	board_i2c.cpp
 	board_mtd.cpp
 	board_spi.cpp
-	board_tim.cpp
+	board_timer.cpp
 	board_usb.c
 )
 

@@ -62,9 +62,10 @@
 
 #define PX4_I2C_BUS_MTD	1
 
-//#define BOARD_ENABLE_CONSOLE_BUFFER
+//#define BOARD_ENABLE_CONSOLE_BUFFER // required for dmesg
 //#define BOARD_CONSOLE_BUFFER_SIZE (1024*3)
-
+//#define ADC_BATTERY_VOLTAGE_CHANNEL	2 // required for battery
+//#define ADC_BATTERY_CURRENT_CHANNEL	3 // required for battery
 #define BOARD_HAS_PWM	DIRECT_PWM_OUTPUT_CHANNELS
 
 /* This board provides a DMA pool and APIs */

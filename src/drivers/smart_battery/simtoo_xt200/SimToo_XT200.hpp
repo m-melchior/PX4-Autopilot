@@ -1,6 +1,6 @@
 /****************************************************************************
  *
- *   Copyright (c) 2020 PX4 Development Team. All rights reserved.
+ *   Copyright (c) 2021 PX4 Development Team. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions
@@ -61,7 +61,7 @@
 #define CUSTOM_METHOD_MANUFACTURER				0
 #define NUM_OF_CELLS							2
 
-#define DATA_SETS_COUNT 						4 // number of data sets to update each cycle
+#define DATA_SETS_COUNT 						5 // number of data sets to update each cycle
 
 class SimToo_XT200 : public device::I2C, public I2CSPIDriver<SimToo_XT200> {
 public:
@@ -98,10 +98,12 @@ private:
 	};
 
 	data_set data_sets[DATA_SETS_COUNT] = {
-			{&_battery_status.voltage_v, REGISTER_ADDRESS_VOLTAGE_1, 1/1000},
-			{&_battery_status.voltage_cell_v[0], REGISTER_ADDRESS_VOLTAGE_CELL_1, (1 / 1000.0f)},
-			{&_battery_status.voltage_cell_v[1], REGISTER_ADDRESS_VOLTAGE_CELL_2, (1 / 1000.0f)},
-			{&_battery_status.remaining, REGISTER_ADDRESS_STATE_OF_CHARGE, (1 / 100.0f)},
+			// report entry							register address					factor
+			{&_battery_status.voltage_v, 			REGISTER_ADDRESS_VOLTAGE_1, 		(1 / 1000.0f)},
+			{&_battery_status.temperature, 			REGISTER_ADDRESS_TEMPERATURE, 		(1 / 100.0f)},
+			{&_battery_status.voltage_cell_v[0], 	REGISTER_ADDRESS_VOLTAGE_CELL_1, 	(1 / 1000.0f)},
+			{&_battery_status.voltage_cell_v[1], 	REGISTER_ADDRESS_VOLTAGE_CELL_2, 	(1 / 1000.0f)},
+			{&_battery_status.remaining, 			REGISTER_ADDRESS_STATE_OF_CHARGE, 	(1 / 100.0f)},
 	};
 
 	int8_t init_values();

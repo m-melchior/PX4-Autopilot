@@ -45,7 +45,7 @@ FBM::FBM(I2CSPIBusOption bus_option, int bus, IFBM *interface) :
 	I2CSPIDriver(	MODULE_NAME, px4::device_bus_to_wq(interface->get_device_id()),
 					bus_option, bus,
 					interface->get_device_address()),
-	_px4_baro(interface->get_device_id()),
+	_px4_barometer(interface->get_device_id()),
 	_interface(interface),
 	_errors_comms(perf_alloc(PC_ELAPSED, MODULE_NAME": comms errors")),
 	_perf_process(perf_alloc(PC_ELAPSED, MODULE_NAME": process"))
@@ -172,9 +172,9 @@ void FBM::RunImpl() {
 
 			const hrt_abstime _timestamp = hrt_absolute_time();
 
-			_px4_baro.set_error_count(perf_event_count(_errors_comms));
-			_px4_baro.set_temperature(_real_temperature);
-			_px4_baro.update(_timestamp, _real_pressure / 100.0f);
+			_px4_barometer.set_error_count(perf_event_count(_errors_comms));
+			_px4_barometer.set_temperature(_real_temperature);
+			_px4_barometer.update(_timestamp, _real_pressure / 100.0f);
 
 			_state = FBM_STATE_START;
 

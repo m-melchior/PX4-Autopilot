@@ -34,7 +34,7 @@
 #include <nuttx/spi/spi.h>
 #include <px4_platform_common/px4_manifest.h>
 //                                                                      KiB		BS    	nB
-static const px4_mft_device_t i2c2 = {				// 24xx256 on Base  256K
+static const px4_mft_device_t i2c2 = {								// 24xx256 on Base  256K
 	.bus_type = px4_mft_device_t::I2C,
 	.devid    = PX4_MK_I2C_DEVID(2, 0x50)
 };
@@ -42,7 +42,7 @@ static const px4_mft_device_t i2c2 = {				// 24xx256 on Base  256K
 
 static const px4_mtd_entry_t fmu_eeprom = {
 	.device = &i2c2,
-	.npart = 2,
+	.npart = 4,
 	.partd = {
 		{
 			.type = MTD_PARAMETERS,
