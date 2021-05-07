@@ -110,7 +110,9 @@ const uint8_t MavlinkReceiver::supported_component_map[COMP_ID_MAX] = {
 
 MavlinkReceiver::~MavlinkReceiver()
 {
+#ifndef NO_TUNES
 	delete _tune_publisher;
+#endif // #ifndef NO_TUNES
 	delete _px4_accel;
 	delete _px4_baro;
 	delete _px4_gyro;
@@ -1673,6 +1675,7 @@ MavlinkReceiver::handle_message_logging_ack(mavlink_message_t *msg)
 void
 MavlinkReceiver::handle_message_play_tune(mavlink_message_t *msg)
 {
+#ifndef NO_TUNES
 	mavlink_play_tune_t play_tune;
 	mavlink_msg_play_tune_decode(msg, &play_tune);
 
@@ -1684,11 +1687,13 @@ MavlinkReceiver::handle_message_play_tune(mavlink_message_t *msg)
 
 		schedule_tune(play_tune.tune);
 	}
+#endif //#ifndef NO_TUNES
 }
 
 void
 MavlinkReceiver::handle_message_play_tune_v2(mavlink_message_t *msg)
 {
+#ifndef NO_TUNES
 	mavlink_play_tune_v2_t play_tune_v2;
 	mavlink_msg_play_tune_v2_decode(msg, &play_tune_v2);
 
@@ -1705,8 +1710,10 @@ MavlinkReceiver::handle_message_play_tune_v2(mavlink_message_t *msg)
 
 		schedule_tune(play_tune_v2.tune);
 	}
+#endif //#ifndef NO_TUNES
 }
 
+#ifndef NO_TUNES
 void MavlinkReceiver::schedule_tune(const char *tune)
 {
 	// We only allocate the TunePublisher object if we ever use it but we
@@ -1726,7 +1733,7 @@ void MavlinkReceiver::schedule_tune(const char *tune)
 	// Send first one straightaway.
 	_tune_publisher->publish_next_tune(now);
 }
-
+#endif // #ifndef NO_TUNES
 
 void
 MavlinkReceiver::handle_message_obstacle_distance(mavlink_message_t *msg)
@@ -3224,9 +3231,11 @@ MavlinkReceiver::Run()
 			last_send_update = t;
 		}
 
+#ifndef NO_TUNES
 		if (_tune_publisher != nullptr) {
 			_tune_publisher->publish_next_tune(t);
 		}
+#endif // #ifndef NO_TUNES
 	}
 }
 

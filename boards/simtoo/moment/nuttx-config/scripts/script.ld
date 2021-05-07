@@ -47,9 +47,14 @@
  * The first 0x4000 of flash is reserved for the bootloader.
  */
 
+/*
+    flash (rx)   : ORIGIN = 0x08004000, LENGTH = 1008K
+    sram (rwx)   : ORIGIN = 0x20000000, LENGTH = 128K
+    ccsram (rwx) : ORIGIN = 0x10000000, LENGTH = 64K
+*/
 MEMORY
 {
-    flash (rx)   : ORIGIN = 0x08004000, LENGTH = 1008K
+    flash (rx)   : ORIGIN = 0x08002800, LENGTH = 1014K
     sram (rwx)   : ORIGIN = 0x20000000, LENGTH = 128K
     ccsram (rwx) : ORIGIN = 0x10000000, LENGTH = 64K
 }

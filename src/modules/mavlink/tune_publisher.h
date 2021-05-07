@@ -33,10 +33,10 @@
 
 #pragma once
 
+#ifndef NO_TUNES
 #include <uORB/Publication.hpp>
 #include <drivers/drv_hrt.h>
 #include <lib/tunes/tunes.h>
-
 
 class TunePublisher
 {
@@ -53,3 +53,5 @@ private:
 
 	uORB::Publication<tune_control_s> _tune_control_pub{ORB_ID(tune_control)};
 };
+
+#endif // #ifndef NO_TUNES

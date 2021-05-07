@@ -398,7 +398,9 @@ private:
 	hrt_abstime			_last_utm_global_pos_com{0};
 
 	// Allocated if needed.
+#ifndef NO_TUNES
 	TunePublisher *_tune_publisher{nullptr};
+#endif // #ifndef NO_TUNES
 
 	hrt_abstime _last_heartbeat_check{0};
 

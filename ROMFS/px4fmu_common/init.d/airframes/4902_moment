@@ -35,7 +35,7 @@ param set-default BAT_V_LOAD_DROP 1
 param set-default BAT1_V_LOAD_DROP 1
 
 # circuit breakers
-param set-default CBRK_SUPPLY_CHK 894281			// turn off power supply check
+param set-default CBRK_SUPPLY_CHK 894281 // turn off power supply check
 param set-default CBRK_USB_CHK 197848
 
 // https://docs.px4.io/master/en/getting_started/rc_transmitter_receiver.html

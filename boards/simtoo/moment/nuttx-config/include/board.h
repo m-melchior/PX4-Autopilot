@@ -53,6 +53,7 @@
 /************************************************************************************
  * Definitions
  ************************************************************************************/
+#define NO_TUNES
 
 /* Clocking *************************************************************************/
 /* The SimToo Moment uses a 24MHz crystal connected to the HSE.
@@ -237,7 +238,6 @@
 // ttyS2 GPS 38400
 #define GPIO_USART6_RX	GPIO_USART6_RX_1	// PC7
 #define GPIO_USART6_TX	GPIO_USART6_TX_1	// PC6
-
 
 #endif  /* __CONFIG_MOMENT_INCLUDE_BOARD_H */
 
